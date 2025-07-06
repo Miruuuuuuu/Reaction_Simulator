@@ -1,0 +1,28 @@
+
+               Synthesis Reaction 
+int main() {
+    SetConsoleOutputCP(CP_UTF8);
+    string filename = "Periodic_Table2.csv";
+   
+    string input1, input2;
+    cout << "Enter an element 01 symbol (e.g., Na, Cl, H): ";
+    cin >> input1;
+    cout << "Enter an element 02 symbol (e.g., Na, Cl, H): ";
+    cin >> input2;
+
+   /*Element e1;
+    Element e2;
+    
+    e1.loadElement(input1, filename);
+    e2.loadElement(input2, filename);
+     */ 
+    Synthesis s1(input1,input2,filename);
+    s1.createProduct();
+    s1.displayReaction();
+
+    
+    return 0;
+}
+
+
+     

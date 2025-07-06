@@ -91,6 +91,27 @@ string generateSMILES(const string& elementSymbol, const string& filename) {
     // Handle SMILES based on valency
     string smiles = element.symbol;
 
+
+
+    if (element.valency != 0) {
+        if (element.nature == "Positive") {
+            // For positive valency, generate "+" signs equal to the valency
+            smiles = "[" + element.symbol + string(element.valency, '+') + "]";
+        } else if (element.nature == "Negative") {
+            // For negative valency, generate "-" signs equal to the absolute value of the valency
+            smiles = "[" + element.symbol + string(element.valency, '-') + "]";
+        }
+        else if(element.nature == "Neutral"){
+            smiles = "[" + element.symbol + "]";
+        }
+    }
+
+    return smiles;
+}
+
+/*  
+
+
     if (element.valency != 0) {
         if (element.valency > 0) {
             // For positive valency, generate "+" signs equal to the valency
@@ -103,10 +124,11 @@ string generateSMILES(const string& elementSymbol, const string& filename) {
 
     return smiles;
 }
+ */
 
 // Main program to take user input and output the SMILES
 int main() {
-    string filename = "Periodic Table.csv";
+    string filename = "Periodic_Table2.csv";
 
     string input;
     cout << "Enter an element symbol (e.g., Na, Cl, H): ";

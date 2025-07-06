@@ -24,6 +24,20 @@ vector<string>positive;
 vector<string>negative;
 string symbols[4];
 int atomCount[4];
+
+struct ElementProperties {
+    int valency;
+    string nature;
+};
+
+class CompoundReaction{
+/*string Reactant1;
+string Reactant2;
+string Product1;
+string Product2;
+*/
+public:
+
 string toSubscript(int number) {
     string subscript = "";
     string normal = to_string(number);
@@ -45,17 +59,13 @@ string toSubscript(int number) {
     return subscript;
 }
 
-struct ElementProperties {
-    int valency;
-    string nature;
-};
-
 void CalCompReact()
 {
     int prev=IonChargeQueue.back();
     int x= 0-prev;
     IonChargeQueue.push(x);
 }
+
 
 map<string, ElementProperties> loadElementData(const string& filename) {
     map<string, ElementProperties> elementMap;
@@ -107,6 +117,21 @@ int calculateIonCharge(const string& element, int atomCount, const map<string, E
     }
     return it->second.valency * atomCount;
 }
+int calculateCompoundCharge(const string& element1, int atomCount1, 
+                          const string& element2, int atomCount2,
+                          const map<string, ElementProperties>& elementMap) {
+    int charge1 = calculateIonCharge(element1, atomCount1, elementMap);
+    int charge2 = calculateIonCharge(element2, atomCount2, elementMap);
+    return charge1 + charge2;
+}
+
+
+
+
+
+
+
+
 /*int calculateIonCharge(const string& element, int atomCount) {
     if (elementMap.find(element) == elementMap.end()) {
         throw runtime_error("Error: Element '" + element + "' not found in the periodic table data.");
@@ -136,13 +161,6 @@ int calculateIonCharge(const string& element, int atomCount, const map<string, E
     return charge;
 }
 */
-int calculateCompoundCharge(const string& element1, int atomCount1, 
-                          const string& element2, int atomCount2,
-                          const map<string, ElementProperties>& elementMap) {
-    int charge1 = calculateIonCharge(element1, atomCount1, elementMap);
-    int charge2 = calculateIonCharge(element2, atomCount2, elementMap);
-    return charge1 + charge2;
-}
 
 int getValidAtomCount() {
     int atomCount;
@@ -284,6 +302,7 @@ void displayIonCharge(vector <int>arr)
 }
 void displayCompounds(string arr[4], int arr2[4]) {
    // cout << "Reactant 01 is " << arr[0] + to_string(arr2[0]) + arr[1] + to_string(arr2[1]) << endl;
+
    cout << "Reactant 01 is " << arr[0] + toSubscript(arr2[0]) + arr[1] + toSubscript(arr2[1]) << endl;
    // cout << "Reactant 02 is " << arr[2] + to_string(arr2[2]) + arr[3] + to_string(arr2[3]) << endl;
         cout << "Reactant 02 is " << arr[2] + toSubscript(arr2[2]) + arr[3] + toSubscript(arr2[3]) << endl;
@@ -297,13 +316,7 @@ int gcd(int a, int b) {
 }
 void displayQueue(queue<int>arr)
 { int i=1;
-    // while (!arr.empty())
-    // {
-    //     int x= arr.top();
-    //     cout<<"Element "<<i<<" has Ion Charge of "<<x<<endl;
-    //     arr.pop();
-    //    i++;
-    // }
+    
     while (!arr.empty())
     {
         int x= arr.front();
@@ -363,9 +376,9 @@ void makeCompound()
     string product2= positive[1]+ toSubscript(balanced2.second)+negative[0]+toSubscript(balanced2.first);
 
     cout<<"Displaying Products"<<endl;
-    cout<<"Prod1 : "<<product1<<"+"<<"  "<<"Prod2: "<<product2;
+    cout<<"Prod1 : "<<product1<<" + Prod2: "<<product2;
 }
-
+};
 int main() {
 
 
@@ -377,9 +390,12 @@ int main() {
    
     // vector <string>Compound1;
     // vector <string>Compound2;
+
+    CompoundReaction reaction;
    
+ 
     try {
-        map<string, ElementProperties> elementMap = loadElementData(filename);
+        map<string, ElementProperties> elementMap = reaction.loadElementData(filename);
         
         for (int i = 0; i < 4; i++) {
             cout << "\nEnter element or compound " << i << " (e.g., Na, Cl, H, NaCl, H2O): ";
@@ -388,9 +404,9 @@ int main() {
             
             
             cout << "Enter the number of atoms/molecules: ";
-             atomCount[i] = getValidAtomCount();
+             atomCount[i] =reaction.getValidAtomCount();
 
-       bool possible = processInput(symbols[i], atomCount[i], elementMap);
+       bool possible = reaction.processInput(symbols[i], atomCount[i], elementMap);
         if(!possible)
         {
             return 1;
@@ -405,12 +421,12 @@ int main() {
     
      
    
- displayCompounds(symbols,atomCount);
+ reaction.displayCompounds(symbols,atomCount);
 
- displayQueue(IonChargeQueue);
+ reaction.displayQueue(IonChargeQueue);
  //displayIonCharge(IonChargeArr);
   //displayQueue(IonChargeQueue);
- makeCompound();
+ reaction.makeCompound();
  //BalanceAtoms(IonChargeArr[0],IonChargeArr[2],0,2);
     return 0;
 }
